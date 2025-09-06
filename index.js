@@ -1,9 +1,11 @@
 document.addEventListener("DOMContentLoaded", setup);
 
-const pixelSize = 10;
+const pixelSize = 1;
+let rowOffset;
+let colOffset;
 let canvasWidth;
 let canvasHeight;
-maxIterations = 60;
+let maxIterations = 50;
 
 class Coordinate {
 	constructor(x, i) {
@@ -36,17 +38,17 @@ class Coordinate {
 
 function setup() {
 	const canvas = document.createElement("canvas");
-	canvas.setAttribute("width", 400);
-	canvas.setAttribute("height", 400);
+	canvas.setAttribute("width", 1200);
+	canvas.setAttribute("height", 1200);
 	canvasWidth = canvas.width;
 	canvasHeight = canvas.height;
+
+	rowOffset = canvasWidth / 1.5;
+	colOffset = canvasHeight / 2;
 
 	canvas.setAttribute("class", "mandelbrot-canvas");
 	document.querySelector(".mandelbrot-canvas-container").appendChild(canvas);
 
-	let testC = new Coordinate(-1, 0);
-
-	console.log(determineIterations(testC));
 	drawImage();
 }
 
@@ -62,13 +64,17 @@ function determineIterations(c) {
 }
 
 function determineColor(numIterations) {
-	if (numIterations === maxIterations) {
-		return { r: 0, g: 0, b: 0 }; // Black if inside the set
+	if (numIterations == maxIterations) {
+		return {
+			r: 0,
+			g: 0,
+			b: 0
+		}; // Black if inside the set
 	} else {
 		return {
-			r: (numIterations / maxIterations) * 255,
-			g: (numIterations / maxIterations) * 255,
-			b: (numIterations / maxIterations) * 255,
+			r: numIterations / maxIterations * 255,
+			g: numIterations / maxIterations * 255,
+			b: numIterations / maxIterations * 255
 		};
 		/*const hue = Math.floor(360 * numIterations / maxIterations);
 		return hslToRgb(hue, 100, 50);*/
@@ -92,11 +98,27 @@ function drawImage() {
 	}
 
 	function colorPixel() {
+		let convertedCoord = convertToCoord(xColumn, yColumn);
+				let iterations = determineIterations(convertedCoord);
+		let colorRes = determineColor(iterations);
+
 		for (let i = 0; i < pixel.data.length; i += 4) {
-			pixel.data[i] = xColumn; // Red
-			pixel.data[i + 1] = yColumn; // Green
-			pixel.data[i + 2] = 0; // Blue
+			pixel.data[i] = colorRes.r; // Red
+			pixel.data[i + 1] = colorRes.g; // Green
+			pixel.data[i + 2] = colorRes.b; // Blue
 			pixel.data[i + 3] = 255; // Alpha
 		}
 	}
+}
+
+/** 
+* @param {number} rowI
+* @param {column} columnI
+* @returns {object}	
+*/
+
+function convertToCoord(rowI, columnI) {
+	let convertX = (rowI - rowOffset) / 100;
+	let convertI = (columnI - colOffset) / 100;
+	return new Coordinate(convertX, convertI);
 }
