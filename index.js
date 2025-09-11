@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", setup);
 
-const pixelSize = 1;
+const pixelSize = 20;
 let rowOffset;
 let colOffset;
 let canvasWidth;
 let canvasHeight;
-let maxIterations = 50;
+let maxIterations = 20;
 
 class Coordinate {
 	constructor(x, i) {
@@ -33,17 +33,17 @@ class Coordinate {
 
 	magnitude() {
 		return Math.sqrt(this.x * this.x + this.i * this.i);
-	}
+	}	
 }
 
 function setup() {
 	const canvas = document.createElement("canvas");
-	canvas.setAttribute("width", 1200);
-	canvas.setAttribute("height", 1200);
+	canvas.setAttribute("width", 600);
+	canvas.setAttribute("height", 600);
 	canvasWidth = canvas.width;
 	canvasHeight = canvas.height;
 
-	rowOffset = canvasWidth / 1.5;
+	rowOffset = canvasWidth / 2 + 100;
 	colOffset = canvasHeight / 2;
 
 	canvas.setAttribute("class", "mandelbrot-canvas");
@@ -118,7 +118,7 @@ function drawImage() {
 */
 
 function convertToCoord(rowI, columnI) {
-	let convertX = (rowI - rowOffset) / 100;
-	let convertI = (columnI - colOffset) / 100;
+	let convertX = (rowI - rowOffset) / 140;
+	let convertI = (columnI - colOffset) / 140;
 	return new Coordinate(convertX, convertI);
 }
