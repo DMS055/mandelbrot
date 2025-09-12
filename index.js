@@ -5,7 +5,7 @@ let rowOffset;
 let colOffset;
 let canvasWidth;
 let canvasHeight;
-let maxIterations = 60;
+let maxIterations = 300;
 let zoom = 140;
 let magnification = 1;
 let panX = 0;
