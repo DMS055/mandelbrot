@@ -1,11 +1,15 @@
 document.addEventListener("DOMContentLoaded", setup);
 
-const pixelSize = 20;
+const pixelSize = 1;
 let rowOffset;
 let colOffset;
 let canvasWidth;
 let canvasHeight;
-let maxIterations = 20;
+let maxIterations = 60;
+let zoom = 140;
+let magnification = 1;
+let panX = 0;
+let panI = 0;
 
 class Coordinate {
 	constructor(x, i) {
@@ -45,6 +49,45 @@ function setup() {
 
 	rowOffset = canvasWidth / 2 + 100;
 	colOffset = canvasHeight / 2;
+
+	window.addEventListener('keydown', inputHandler);
+
+	function inputHandler(event) {
+		const key = event.key.toLowerCase();
+		switch (key) {
+			// Zoom
+			case "r":
+				zoom *= 1.2;
+				magnification *= 1.2;
+				drawImage();
+				break;
+			case "t":
+				zoom /= 1.2;
+				magnification /= 1.2;
+				drawImage();
+				break;
+			// Movement
+			case "w":
+				panI += 0.1 / magnification;
+				drawImage();
+				break;
+			case "a":
+				panX -= 0.1 / magnification;
+				drawImage();
+				break;
+			case "s":
+				panI -= 0.1 / magnification;
+				drawImage();
+				break;
+			case "d":
+				panX += 0.1 / magnification;
+				drawImage();
+				break;
+			default:
+				break;
+		}
+		console.log(key);
+	}
 
 	canvas.setAttribute("class", "mandelbrot-canvas");
 	document.querySelector(".mandelbrot-canvas-container").appendChild(canvas);
@@ -118,7 +161,7 @@ function drawImage() {
 */
 
 function convertToCoord(rowI, columnI) {
-	let convertX = (rowI - rowOffset) / 140;
-	let convertI = (columnI - colOffset) / 140;
+	let convertX = (rowI - rowOffset) / zoom + panX;
+	let convertI = (columnI - colOffset) / zoom + panI;
 	return new Coordinate(convertX, convertI);
 }
